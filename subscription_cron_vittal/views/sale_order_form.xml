@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_sale_order_form">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <header>
+                    <button string="Begin Subscription" type="object" name="start_sub" class="oe_highlight" attrs="{'invisible': ['|',('is_subscription', '!=', True),('sub_active', '=', True)]}"/>
+                    <button string="End Subscription" type="object" name="end_sub" class="oe_highlight" attrs="{'invisible': ['|',('is_subscription', '!=', True),('sub_active', '=', False)]}"/>
+                </header>
+                
+                <!-- agregar campo de suscripción -->
+                <field name="payment_term_id" position="after">
+                    <field name="is_subscription"/>
+                </field>
+
+                <!-- pestaña de suscripciones -->
+                <xpath expr="//sheet/group" position="after">
+                    <group attrs="{'invisible': [('is_subscription', '!=', True)]}">
+                        <group class="col-xs-4">
+                            <field name="sub_active"/>
+                            <field name="recurrence" attrs="{'required': ['&amp;',('sub_active', '=', True),('is_subscription','=',True)]}"/>
+                            <field name="sub_start_date" placeholder="Date when subscription starts" attrs="{'required': ['&amp;',('sub_active', '=', True),('is_subscription','=',True)]}"/>
+                            <field name="sub_end_date" placeholder="Date when subscription ends" attrs="{'required': ['&amp;',('sub_active', '=', True),('is_subscription','=',True)]}"/>
+                            <field name="sub_invoice_date" class="oe_read_only"/>
+                        </group>
+                        <group class="col-xs-4">
+                            <field name="auto_payment"/>
+                            <field name="auto_invoice"/>
+                            <field name="auto_remind"/>
+                            <field name="auto_sub"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_sale_order_subscription_form">
+            <field name="name">sale.order.form.subscription.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="campos_clientes_vittal.view_sale_order_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- agregar campo de fecha de entrega -->
+                <field name="delivery_date" position="replace">
+                    <field name="delivery_date" attrs="{'invisible': [('is_subscription', '=', True)]}"/>
+                </field>
+                
+            </field>
+        </record>
+        
+    </data>
+</odoo>

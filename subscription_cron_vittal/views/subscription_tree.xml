@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <record id="view_subscription_tree" model="ir.ui.view">
+             <field name="name">Subscriptions</field>
+             <field name="model">sale.order</field>
+             <field name="arch" type="xml">
+                 <tree>
+                    <field name="name" string="Order Number"/>
+                    <field name="partner_id"/>
+                    <field name="sub_start_date"/>
+                    <field name="sub_end_date"/>
+                    <field name="recurrence"/>
+                    <field name="sub_invoice_date"/>
+                    <field name="invoice_status"/>
+                    <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                    <field name="state" invisible="1"/>
+                 </tree>
+             </field>
+        </record>
+    </data>
+</odoo>

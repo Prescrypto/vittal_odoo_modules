@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record model='ir.ui.view' id='view_subscription_filter'>
+            <field name='name'>sale.order.list.export.select</field>
+            <field name='model'>sale.order</field>
+            <field name='inherit_id' ref='sale.view_sales_order_filter'/>
+            <field name='arch' type='xml'>
+                <field name="name" position="after">
+                    <filter string="Invoiced" name="sub" domain="[('exported','=',True)]"/>
+                    <filter string="Uninvoiced" name="sub" domain="[('exported','=',False)]"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

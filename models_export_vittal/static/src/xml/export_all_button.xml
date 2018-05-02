@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template id="template" xml:space="preserve">
+    <t t-extend="ListView.buttons">
+        <t t-jquery="button.export_button" t-operation="after">
+            <t t-if="widget.model=='res.partner'">
+                <button class="btn btn-sm export_all_button" data-type="clients" data-filename="Clientes" data-count="all" type="button">Export All</button>
+            </t>
+            <t t-if="widget.model=='product.template'">
+                <button class="btn btn-sm export_all_button" data-type="products" data-filename="Productos" data-count="all" type="button">Export All</button>
+            </t>
+        </t>
+    </t>
+</template>

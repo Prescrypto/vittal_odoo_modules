@@ -1,0 +1,10 @@
+<odoo>
+    <data>
+        <!-- add css file -->
+        <template id="assets_backend" name="Static Assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/models_export_vittal/static/src/js/export.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

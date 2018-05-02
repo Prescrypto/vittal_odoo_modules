@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- suscripciones -->
+    <menuitem id="menu_subs" parent="sales_team.menu_sales" name="Subscriptions" action="view_subscription_action"/>
+
+</odoo>

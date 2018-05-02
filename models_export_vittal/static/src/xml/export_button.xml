@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template id="template" xml:space="preserve">
+    <t t-extend="ListView.buttons">
+        <t t-jquery="button.o_list_button_add" t-operation="after">
+            <t t-if="widget.model=='res.partner'">
+                <button class="btn btn-sm export_button" data-type="clients" data-filename="Clientes" type="button">Export</button>
+            </t>
+            <t t-if="widget.model=='product.template'">
+                <button class="btn btn-sm export_button" data-type="products" data-filename="Productos" type="button">Export</button>
+            </t>
+            <t t-if="widget.model=='sale.order'">
+                <button class="btn btn-sm export_button" data-type="orders" data-filename="Facturas" type="button">Export Uninvoiced</button>
+            </t>
+        </t>
+    </t>
+</template>
