@@ -16,7 +16,7 @@
     'version': '10.0.1',
 
     'depends': [
-        'base','campos_clientes_vittal',
+        'base','campos_clientes_vittal','account',
     ],
 
     # always loaded

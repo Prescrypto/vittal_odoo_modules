@@ -109,11 +109,13 @@ def sanitize(row):
 # formatear fechas
 def date_format(date_string):
     date = fields.Datetime.from_string(date_string)
-    return date.strftime('%d/%m/%Y') if date else ""
+    date_str = date.strftime('%d/%m/%y')
+    return date_str if date_str else ""
 
 
 # llenar campos de linea con orden relevante
 def merge_order_line(orders, products, line):
+    
     # obtener orden a la cual pertenece la linea
     order = orders.search([['name', '=', line[0]]], limit=1)
     # obtener producto que pertenece a la linea
@@ -121,7 +123,7 @@ def merge_order_line(orders, products, line):
     # agregar id externo de usuario
     line.insert(1, order.partner_export_id)
     # formatear fecha
-    line[2] = date_format(line[2])
+    line['create_date'] = date_format(line[2])
     # agregar descuento financiero
     line.insert(3, "")
     # agregar clave de vendedor
@@ -149,3 +151,46 @@ def merge_order_line(orders, products, line):
     # agregar nota de orden de venta
     line.insert(21, order.note if order.note else "")
     return line
+
+# llenar campos de linea con orden relevante
+def merge_invoice_line(orders, line):
+    # obtener orden a la cual pertenece la linea
+    
+    invoice_line_id = extract_id(line[6])
+    del line[-1]
+    
+    invoice_line = orders.env['account.invoice.line'].search([('id','=',invoice_line_id)], limit=1)
+    invoice = invoice_line.invoice_id
+    
+    # agregar id externo de usuario
+    line.insert(1, invoice.partner_id.group_code)
+    # formatear fecha
+    line[2] = date_format(line[2])
+    # agregar descuento financiero
+    line.insert(3, "")
+    # agregar clave de vendedor
+    line.insert(5, 1)
+    # agregar su pedido
+    line.insert(6, 1)
+    # agregar fecha de entrega
+    line.insert(7, "")
+    # agregar fecha de vencimiento
+    line.insert(8, "")
+    # agregar descuentos adicionales
+    line.insert(11, 0)
+    line.insert(12, 0)
+    # agregar comision
+    line.insert(13, "")
+    # agregar clave de esquema de impuestos
+    line.insert(14, 1)
+    # agregar cantidad
+    line.insert(16, 1)
+    # agregar ivas
+    line.insert(17, 0)
+    line.insert(18, 0)
+    line.insert(19, 0)
+    line.insert(20, 16)
+    # agregar nota de orden de venta
+    line.insert(21, invoice.comment if invoice.comment else "")
+    return line
+
