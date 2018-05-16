@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+# Pendiente de migrar, posiblemente no es necesario.
+"""
 import odoo
 import logging
 from odoo import models, fields, api
@@ -51,3 +53,4 @@ class user_sales_order(models.Model):
         # exportar
         format_orders = partial(sae.format, "orders")
         return map(format_orders, rows)
+"""

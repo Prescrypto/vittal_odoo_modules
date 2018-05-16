@@ -17,7 +17,7 @@
               "LasLabs, "
               "Odoo Community Association (OCA)",
     'website': 'https://github.com/oca/contract',
-    'depends': ['base', 'account', 'analytic'],
+    'depends': ['base', 'account', 'analytic', 'campos_clientes_vittal'],
     'data': [
         'security/ir.model.access.csv',
         'security/contract_security.xml',

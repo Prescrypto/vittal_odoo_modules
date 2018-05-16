@@ -19,6 +19,18 @@ class AccountAnalyticAccount(models.Model):
                 'account.analytic.contract',
                 ]
 
+    #################################
+    # CAMPOS CFDI
+
+    sat_uso_id = fields.Many2one("sat.uso", "Uso CFDI")
+    sat_pagos_id = fields.Many2one("sat.pagos", "Forma de Pago")
+    sat_metodo_pago = fields.Selection([
+        ('PUE', 'PUE - PAGO EN UNA SOLA EXHIBICIÓN'),
+        ('PPD', 'PPD - PAGO EN PARCIALIDADES O DIFERIDO')
+    ], 'Método de Pago', default='PUE')
+
+    #################################
+
     contract_template_id = fields.Many2one(
         string='Contract Template',
         comodel_name='account.analytic.contract',
@@ -94,6 +106,9 @@ class AccountAnalyticAccount(models.Model):
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
         self.pricelist_id = self.partner_id.property_product_pricelist.id
+        self.sat_uso_id = self.partner_id.fiscal_address.sat_uso_id
+        self.sat_metodo_pago = self.partner_id.fiscal_address.sat_metodo_pago
+        self.sat_pagos_id = self.partner_id.fiscal_address.sat_pagos_id
 
     @api.constrains('partner_id', 'recurring_invoices')
     def _check_partner_id_recurring_invoices(self):
@@ -243,6 +258,9 @@ class AccountAnalyticAccount(models.Model):
             'company_id': self.company_id.id,
             'contract_id': self.id,
             'user_id': self.partner_id.user_id.id,
+            'sat_uso_id': self.sat_uso_id,
+            'sat_metodo_pago': self.sat_metodo_pago,
+            'sat_pagos_id': self.sat_pagos_id
         })
         # Get other invoice values from partner onchange
         invoice._onchange_partner_id()

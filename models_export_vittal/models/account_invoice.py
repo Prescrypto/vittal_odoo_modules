@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import odoo
-import logging
+import simple_export as se
 from odoo import models, fields, api
-from dateutil.relativedelta import relativedelta
-from . import _sae as sae
-from datetime import datetime
-from functools import partial
-
-_logger = logging.getLogger(__name__)
 
 
 class AccountInvoice(models.Model):
@@ -19,56 +12,83 @@ class AccountInvoice(models.Model):
     
     # exportación sae
     def export(self):
-        
-        # lista de ventas
-        orders = self.env['account.invoice'].search([('exported','=',False),('state','in',('open','paid'))])
+        orders = self.env['account.invoice'].search(
+            [('exported', '=', False), ('state', 'in', ('open', 'paid'))]
+        )
+        export_lines = ""
+        for o in orders:
+            export_lines = export_lines + se.gen_csv(o.invoice_line_ids, header=False)
+        header = se.gen_csv(self.env['account.invoice.line'])
+        orders.write({'exported': True})
+        self.env.cr.commit()
+        return header + export_lines
 
-        # lista de lineas sin facturar
-        lines = self.env['account.invoice.line'].search(
-            [('invoice_id','in',orders.ids)])
-
-        # datos relevantes de lineas
-        line_rows = lines.export_data([
-            'invoice_id',
-            'create_date',
-            'name',
-            'price_unit',
-            'discount',
-            'product_code',
-            'id',
-        ]).get('datas', [])
-
-        
-        # agregar datos de orden a lineas anteriores
-        merge = partial(sae.merge_invoice_line, orders)
-        rows = map(merge, line_rows)
-
-        # actualizar fecha al e indicar que fueron exportados
-        update = {
-            #'create_date': fields.Datetime.to_string(datetime.now()),
-            'exported': True,
-        }
-        #orders.write(update)
-        #lines.write(update)
-
-        # exportar
-        return map(sae.sanitize, rows)
 
 class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 
-    # clave erste derivada de producto
-    related_product_code = fields.Char(
-        string="Product Code",
-        related="product_id.clave_erste",
-        readonly=True,
-        company_dependent=True)
+    product_id = fields.Many2one('product.product', required=True)
 
-    product_code = fields.Char(
-        "Product Code", compute="_get_product_code", store=True)
+    export_map = [
+        'id',
+        'invoice_id.partner_id.group_code',
+        'invoice_id.date_invoice',
+        None,
+        None,
+        None,
+        None,
+        'invoice_id.comment',
+        'invoice_id.user_id.id',
+        'invoice_id.id',
+        None,
+        'invoice_id.date_due',
+        'price_unit',
+        'const:0',
+        'const:0',
+        'const:0',
+        'const:0',
+        None,
+        'product_id.clave_sat',
+        'quantity',
+        None,
+        None,
+        None,
+        'const:16',
+        None,
+        'name',
+        'invoice_id.sat_metodo_pago',
+        'invoice_id.sat_pagos_id.codigo_forma',
+        'invoice_id.sat_uso_id.codigo_uso'
+    ]
 
-    @api.depends("related_product_code")
-    def _get_product_code(self):
-        for record in self:
-            if record.related_product_code:
-                record.product_code = record.related_product_code
+    header_map = [
+        'Clave',
+        'Cliente',
+        'Fecha de elaboración',
+        'Descuento financiero',
+        'Numero de almacen cabecera',
+        'Numero de Moneda',
+        'Tipo de Cambio',
+        'Observaciones',
+        'Clave de vendedor',
+        'Su pedido',
+        'Fecha de entrega',
+        'Fecha de vencimiento',
+        'Precio',
+        'Desc. 1',
+        'Desc. 2',
+        'Desc. 3',
+        'Comisión',
+        'Clave de esquema de impuestos',
+        'Clave del artículo',
+        'Cantidad',
+        'I.E.P.S.',
+        'Ret. ISR',
+        'Ret. IVA',
+        'I.V.A.',
+        'Numero de almacen Partidas',
+        'Observaciones de partida',
+        'Metodo de Pago',
+        'Forma de Pago Sat',
+        'Uso CFDI'
+    ]

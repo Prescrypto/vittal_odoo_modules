@@ -26,6 +26,7 @@ class AccountAnalyticContract(models.Model):
         comodel_name="res.partner",
         string="Partner (always False)",
     )
+
     pricelist_id = fields.Many2one(
         comodel_name='product.pricelist',
         string='Pricelist',

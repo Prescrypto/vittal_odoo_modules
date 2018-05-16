@@ -5,8 +5,8 @@
     'summary': """Exportar Catalogos compatibles SAE.""",
 
     'description': """
-        Exporta en csv Catalogos de Contactos y Productos,
-        compatibles para importar en SAE
+        Exporta en csv Catalogos de Contactos y Facturas,
+        compatibles para importar en SAE.
     """,
 
     'author': "Prescrypto",

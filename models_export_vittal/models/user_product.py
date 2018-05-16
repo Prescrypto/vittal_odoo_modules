@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import odoo
-import _sae as sae
-from functools import partial
 from odoo import models, fields, api
 
-
+# Pendiente de migrar
+"""
 class user_product(models.Model):
     _inherit = "product.template"
 
@@ -33,3 +31,4 @@ class user_product(models.Model):
         format_products = partial(sae.format, "products")
 
         return map(format_products, valid_products.export_data(columns).get('datas', []))
+"""
